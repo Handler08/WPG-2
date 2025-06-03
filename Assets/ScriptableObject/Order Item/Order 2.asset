@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdeabcbeba2d4024a9a7ba1825ed09fd, type: 3}
+  m_Name: Order 2
+  m_EditorClassIdentifier: 
+  customerDialog: "Aku sedang diet.  Aku pesan 1 piring isi kentang, wortel, ayam,
+    dannn\u2026 buah merah berair? Iya. Tolong cepat sajikan. "
+  orderedFoods:
+  - {fileID: 11400000, guid: 510de7f302e2dc2499d9bf1f7944efad, type: 2}
+  - {fileID: 11400000, guid: 805bcce01c5f857478821db93b23a718, type: 2}
+  - {fileID: 11400000, guid: a4db252d09ecdb74fb14760f8171313a, type: 2}
+  - {fileID: 11400000, guid: b26c20fb3b4318a41b181cebed756feb, type: 2}
