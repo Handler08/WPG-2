@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using TMPro;
 
 public class CustomerBehaviour : MonoBehaviour
 {
@@ -8,7 +9,10 @@ public class CustomerBehaviour : MonoBehaviour
 
     private NavMeshAgent agent;
     private Transform pointStart, pointBuy, pointEnd;
-    public Transform StandPoint;
+    public Transform standPoint;
+
+    [SerializeField] private TextMeshProUGUI dialogText;
+    [SerializeField] private GameObject dialogBubble; // Add this for the image bubble parent
 
     private bool orderServed = false;
 
@@ -22,6 +26,7 @@ public class CustomerBehaviour : MonoBehaviour
 
         transform.position = pointStart.position;
         GoToBuy();
+        HideDialog();
     }
 
     void Update()
@@ -38,7 +43,7 @@ public class CustomerBehaviour : MonoBehaviour
                 break;
 
             case State.Waiting:
-                FaceTarget(StandPoint.position);
+                FaceTarget(standPoint.position);
                 if (orderServed)
                 {
                     GoToEnd();
@@ -68,18 +73,18 @@ public class CustomerBehaviour : MonoBehaviour
         OrderData order = OrderManager.Instance.AssignRandomOrder();
         Debug.Log($"[Customer] Says: {order.customerDialog}");
 
-        FoodManager.Instance.canSelectFood = true; // Enable food selection
+        ShowDialog(order.customerDialog);
+        FoodManager.Instance.canSelectFood = true;
         orderServed = false;
     }
 
-
     void GoToEnd()
     {
+        HideDialog();
         currentState = State.WalkingAway;
         agent.SetDestination(pointEnd.position);
         agent.isStopped = false;
         Debug.Log("[Customer] Walking away...");
-        FoodManager.Instance.canSelectFood = false;
     }
 
     void RestartCycle()
@@ -93,7 +98,7 @@ public class CustomerBehaviour : MonoBehaviour
     {
         orderServed = true;
     }
-    
+
     void FaceTarget(Vector3 targetPos)
     {
         Vector3 direction = (targetPos - transform.position).normalized;
@@ -106,4 +111,26 @@ public class CustomerBehaviour : MonoBehaviour
         }
     }
 
+    public void ShowDialog(string text)
+    {
+        if (dialogText != null)
+        {
+            dialogText.text = text;
+            dialogText.gameObject.SetActive(true);
+        }
+
+        if (dialogBubble != null) // Show bubble background
+        {
+            dialogBubble.SetActive(true);
+        }
+    }
+
+    public void HideDialog()
+    {
+        if (dialogText != null)
+            dialogText.gameObject.SetActive(false);
+
+        if (dialogBubble != null) // Hide bubble background
+            dialogBubble.SetActive(false);
+    }
 }
