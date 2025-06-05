@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdeabcbeba2d4024a9a7ba1825ed09fd, type: 3}
   m_Name: Order 1
   m_EditorClassIdentifier: 
-  customerDialog: 'Tolong satu porsi nasi dengan sayuran berwarna orange, daging
-    unggas, dan buah semangka '
+  customerDialog: Tolong satu porsi nasi dengan sayuran berwarna orange, daging unggas,
+    dan buah semangka
   orderedFoods:
   - {fileID: 11400000, guid: c7e6e7854f5ffce49998b9d3ec76437c, type: 2}
   - {fileID: 11400000, guid: 805bcce01c5f857478821db93b23a718, type: 2}
