@@ -15,6 +15,9 @@ public class CustomerBehaviour : MonoBehaviour
     [SerializeField] private GameObject dialogBubble; // Add this for the image bubble parent
 
     private bool orderServed = false;
+    private bool isFacingTarget = false;
+    private bool hasShownDialog = false;
+    private string pendingDialogText = "";
 
     void Start()
     {
@@ -44,6 +47,11 @@ public class CustomerBehaviour : MonoBehaviour
 
             case State.Waiting:
                 FaceTarget(standPoint.position);
+                if (!hasShownDialog && isFacingTarget)
+                {
+                    ShowDialog(pendingDialogText);
+                    hasShownDialog = true;
+                }
                 if (orderServed)
                 {
                     GoToEnd();
@@ -73,7 +81,10 @@ public class CustomerBehaviour : MonoBehaviour
         OrderData order = OrderManager.Instance.AssignRandomOrder();
         Debug.Log($"[Customer] Says: {order.customerDialog}");
 
-        ShowDialog(order.customerDialog);
+        pendingDialogText = order.customerDialog; // Save for later
+        isFacingTarget = false;
+        hasShownDialog = false;
+
         FoodManager.Instance.canSelectFood = true;
         orderServed = false;
     }
@@ -102,12 +113,18 @@ public class CustomerBehaviour : MonoBehaviour
     void FaceTarget(Vector3 targetPos)
     {
         Vector3 direction = (targetPos - transform.position).normalized;
-        direction.y = 0f; // Prevent tilting up/down
+        direction.y = 0f;
 
         if (direction != Vector3.zero)
         {
             Quaternion lookRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f); // Smooth rotate
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+
+            float angle = Quaternion.Angle(transform.rotation, lookRotation);
+            if (angle < 5f) // Done rotating
+            {
+                isFacingTarget = true;
+            }
         }
     }
 

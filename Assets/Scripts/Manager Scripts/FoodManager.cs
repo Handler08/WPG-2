@@ -41,7 +41,7 @@ public class FoodManager : MonoBehaviour
 
     private void CheckOrderMatch()
     {
-        OrderData currentOrder = OrderManager.Instance.GetCurrentOrder(); // ← Add this method if needed
+        OrderData currentOrder = OrderManager.Instance.GetCurrentOrder();
 
         if (currentOrder == null)
         {

@@ -10,17 +10,6 @@ public class OrderManager : MonoBehaviour
     private List<int> unpickedIndices = new List<int>();
     private OrderData currentOrder;
 
-    public OrderData GetCurrentOrder()
-    {
-        return currentOrder;
-    }
-
-    public OrderData AssignRandomOrder()
-    {
-        currentOrder = GetRandomOrder();
-        return currentOrder;
-    }
-
     private void Awake()
     {
         // Singleton setup
@@ -34,6 +23,18 @@ public class OrderManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    
+    public OrderData GetCurrentOrder()
+    {
+        return currentOrder;
+    }
+
+    public OrderData AssignRandomOrder()
+    {
+        currentOrder = GetRandomOrder();
+        return currentOrder;
+    }
+
 
     private void Start()
     {
