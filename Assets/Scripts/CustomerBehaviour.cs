@@ -30,6 +30,7 @@ public class CustomerBehaviour : MonoBehaviour
         transform.position = pointStart.position;
         GoToBuy();
         HideDialog();
+        Debug.Log("[CustomerBehaviour] Initialized at Start point");
     }
 
     void Update()
@@ -42,16 +43,12 @@ public class CustomerBehaviour : MonoBehaviour
                     currentState = State.Waiting;
                     agent.isStopped = true;
                     CallOrder();
+                    Debug.Log("[CustomerBehaviour] Reached buy point, entering Waiting state");
                 }
                 break;
 
             case State.Waiting:
                 FaceTarget(standPoint.position);
-                if (!hasShownDialog && isFacingTarget)
-                {
-                    ShowDialog(pendingDialogText);
-                    hasShownDialog = true;
-                }
                 if (orderServed)
                 {
                     GoToEnd();
@@ -63,6 +60,7 @@ public class CustomerBehaviour : MonoBehaviour
                 {
                     // Restart loop
                     RestartCycle();
+                    Debug.Log("[CustomerBehaviour] Reached end point, restarting cycle");
                 }
                 break;
         }
@@ -73,18 +71,18 @@ public class CustomerBehaviour : MonoBehaviour
         currentState = State.WalkingToBuy;
         agent.SetDestination(pointBuy.position);
         agent.isStopped = false;
-        Debug.Log("[Customer] Walking to buy point...");
+        HideDialog();
+        Debug.Log("[CustomerBehaviour] Walking to buy point...");
     }
 
     void CallOrder()
     {
         OrderData order = OrderManager.Instance.AssignRandomOrder();
-        Debug.Log($"[Customer] Says: {order.customerDialog}");
-
-        pendingDialogText = order.customerDialog; // Save for later
+        pendingDialogText = order.customerDialog;
+        Debug.Log($"[CustomerBehaviour] Order assigned, dialog text: {pendingDialogText}");
+        HideDialog(); // Ensure dialog is hidden until CameraManager shows it
         isFacingTarget = false;
         hasShownDialog = false;
-
         FoodManager.Instance.canSelectFood = true;
         orderServed = false;
     }
@@ -95,7 +93,7 @@ public class CustomerBehaviour : MonoBehaviour
         currentState = State.WalkingAway;
         agent.SetDestination(pointEnd.position);
         agent.isStopped = false;
-        Debug.Log("[Customer] Walking away...");
+        Debug.Log("[CustomerBehaviour] Walking away...");
     }
 
     void RestartCycle()
@@ -104,10 +102,10 @@ public class CustomerBehaviour : MonoBehaviour
         GoToBuy();
     }
 
-    // Call this from FoodManager when order is successfully served
     public void NotifyOrderServed()
     {
         orderServed = true;
+        Debug.Log("[CustomerBehaviour] Order served, will walk away");
     }
 
     void FaceTarget(Vector3 targetPos)
@@ -121,7 +119,7 @@ public class CustomerBehaviour : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
 
             float angle = Quaternion.Angle(transform.rotation, lookRotation);
-            if (angle < 5f) // Done rotating
+            if (angle < 5f)
             {
                 isFacingTarget = true;
             }
@@ -135,19 +133,40 @@ public class CustomerBehaviour : MonoBehaviour
             dialogText.text = text;
             dialogText.gameObject.SetActive(true);
         }
-
-        if (dialogBubble != null) // Show bubble background
+        if (dialogBubble != null)
         {
             dialogBubble.SetActive(true);
         }
+        hasShownDialog = true;
+        Debug.Log("[CustomerBehaviour] Showing dialog: " + text);
     }
 
     public void HideDialog()
     {
         if (dialogText != null)
+        {
             dialogText.gameObject.SetActive(false);
-
-        if (dialogBubble != null) // Hide bubble background
+        }
+        if (dialogBubble != null)
+        {
             dialogBubble.SetActive(false);
+        }
+        hasShownDialog = false;
+        Debug.Log("[CustomerBehaviour] Hiding dialog");
+    }
+
+    public string GetCurrentDialog()
+    {
+        return pendingDialogText;
+    }
+
+    public bool IsWaiting()
+    {
+        return currentState == State.Waiting;
+    }
+
+    public bool IsDialogShown()
+    {
+        return hasShownDialog;
     }
 }
